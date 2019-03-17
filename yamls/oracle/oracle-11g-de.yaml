@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-test
+  namespace: zhongchuang
+spec:
+  selector:
+    matchLabels:
+      app: oracle-test
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: oracle-test
+    spec:
+      containers:
+      - image: registry.njuics.cn/oracle/oracle-xe-11g:latest
+        imagePullPolicy: IfNotPresent
+        name: oracle-test
+        ports:
+        - containerPort: 22
+        - containerPort: 1521
+        resources:
+          limits:
+            memory: 4096Mi
+        volumeMounts:
+        - name: oracle-data
+          mountPath: /u01/app/oracle/oradata
+          subPath: oradata
+        env:
+        - name: ORACLE_CHARACTERSET
+          value: ZHS16GBK
+      volumes:
+      - name: oracle-data
+        persistentVolumeClaim:
+          claimName: oracle-pvc
