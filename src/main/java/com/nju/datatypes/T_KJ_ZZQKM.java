@@ -10,17 +10,17 @@ public class T_KJ_ZZQKM {
     private String YHJGMC;
     private String KMBH;
     private String KMMC;
-    private int KMJC;
-    private int KMLX;
-    private float QCJFYE;
-    private float QCDFYE;
-    private float JFFSE;
-    private float DFFSE;
-    private float QMJFYE;
-    private float QMDFYE;
+    private String KMJC;
+    private String KMLX;
+    private String QCJFYE;
+    private String QCDFYE;
+    private String JFFSE;
+    private String DFFSE;
+    private String QMJFYE;
+    private String QMDFYE;
     private String BZ;
     private String KJRQ;
-    private int BSZQ;
+    private String BSZQ;
 
     private boolean notnull;
 
@@ -30,8 +30,8 @@ public class T_KJ_ZZQKM {
         Gson gson = new Gson();
         T_KJ_ZZQKM row = gson.fromJson(json_String, T_KJ_ZZQKM.class);
         row.notnull = (row.JRXKZH != null) && (row.YHJGDM != null) && (row.NBJGH != null) && (row.YHJGMC != null) && (row.KMBH != null)
-                        && (row.KMJC != -1) && (row.KMLX != -1) && (row.QCDFYE != -1) && (row.QCJFYE != -1) && (row.JFFSE != -1)  && (row.DFFSE != -1)
-                        && (row.QMJFYE != -1) && (row.QMDFYE != -1) && (row.BZ != null) && (row.KJRQ != null) && (row.BSZQ != -1);
+                        && (row.KMJC != null) && (row.KMLX != null) && (row.QCDFYE != null) && (row.QCJFYE != null) && (row.JFFSE != null)  && (row.DFFSE != null)
+                        && (row.QMJFYE != null) && (row.QMDFYE != null) && (row.BZ != null) && (row.KJRQ != null) && (row.BSZQ != null);
         return row;
     }
 
@@ -86,59 +86,59 @@ public class T_KJ_ZZQKM {
     }
 
 
-    public int getKMJC() {
+    public String getKMJC() {
         return KMJC;
     }
-    public void setKMJC(int KMJC) {
+    public void setKMJC(String KMJC) {
         this.KMJC = KMJC;
     }
 
-    public int getKMLX() {
+    public String getKMLX() {
         return KMLX;
     }
-    public void setKMLX(int KMLX) {
+    public void setKMLX(String KMLX) {
         this.KMLX = KMLX;
     }
 
-    public float getQCJFYE() {
+    public String getQCJFYE() {
         return QCJFYE;
     }
-    public void setQCJFYE(float QCJFYE) {
+    public void setQCJFYE(String QCJFYE) {
         this.QCJFYE = QCJFYE;
     }
 
-    public float getQCDFYE() {
+    public String getQCDFYE() {
         return QCDFYE;
     }
-    public void setQCDFYE(float QCDFYE) {
+    public void setQCDFYE(String QCDFYE) {
         this.QCDFYE = QCDFYE;
     }
 
-    public float getJFFSE() {
+    public String getJFFSE() {
         return JFFSE;
     }
-    public void setJFFSE(float JFFSE) {
+    public void setJFFSE(String JFFSE) {
         this.JFFSE = JFFSE;
     }
 
-    public float getDFFSE() {
+    public String getDFFSE() {
         return DFFSE;
     }
-    public void setDFFSE(float DFFSE) {
+    public void setDFFSE(String DFFSE) {
         this.DFFSE = DFFSE;
     }
 
-    public float getQMJFYE() {
+    public String getQMJFYE() {
         return QMJFYE;
     }
-    public void setQMJFYE(float QMJFYE) {
+    public void setQMJFYE(String QMJFYE) {
         this.QMJFYE = QMJFYE;
     }
 
-    public float getQMDFYE() {
+    public String getQMDFYE() {
         return QMDFYE;
     }
-    public void setQMDFYE(float QMDFYE) {
+    public void setQMDFYE(String QMDFYE) {
         this.QMDFYE = QMDFYE;
     }
 
@@ -156,10 +156,10 @@ public class T_KJ_ZZQKM {
         this.KJRQ = KJRQ;
     }
 
-    public int getBSZQ() {
+    public String getBSZQ() {
         return BSZQ;
     }
-    public void setBSZQ(int BSZQ) {
+    public void setBSZQ(String BSZQ) {
         this.BSZQ = BSZQ;
     }
 
