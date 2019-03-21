@@ -1,6 +1,8 @@
 package com.nju;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.nju.datatypes.T_KJ_ZZQKM;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -41,43 +43,58 @@ public class StreamingJob {
 	private static Set<String> hashSet = new HashSet<>();
 
 	public static void main(String[] args) throws Exception {
-		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+		final StreamExecutionEnvironment env;
+		String topic = "test-T_KJ_ZZQKM";
+		String path = null;
+		int sourceParallelism = 1;
+		int sinkParallelism = 1;
+		Properties properties = new Properties();
 
+		if (args.length == 0){
+			env = StreamExecutionEnvironment.createLocalEnvironment();
+			properties.setProperty("bootstrap.servers", "localhost:9092");
+			properties.setProperty("group.id", "test-kafka-0");
+			properties.setProperty("consumer.timeout.ms", "1200");
+		}
+		else {
+			env = StreamExecutionEnvironment.getExecutionEnvironment();
+			if (args.length != 4){
+				System.err.println("Usage: ./bin/flink run -c com.nju.StreamingJob /flink-test-1.0-SNAPSHOT.jar <topic> <path> <sourceParallelism> <sinkParallelism>\n");
+			}
+
+			topic = args[0];
+			path = args[1];
+
+			sourceParallelism = Integer.parseInt(args[2]);
+			sinkParallelism = Integer.parseInt(args[3]);
+
+			properties.setProperty("bootstrap.servers", "kafka-headless.zhongchuang.svc.cluster.local:9092");
+			properties.setProperty("group.id", "test-kafka-1");
+			properties.setProperty("consumer.timeout.ms", "60000");
+			properties.setProperty("fs.default-scheme","hdfs://hadoop-spark-master.hive-test.svc.cluster.local:9000");
+
+		}
 		env.enableCheckpointing(5000);
 //		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
-		if (args.length != 4){
-			System.err.println("Usage: ./bin/flink run -c com.nju.StreamingJob /flink-test-1.0-SNAPSHOT.jar <topic> <path> <sourceParallelism> <sinkParallelism>\n");
-		}
 
-		String topic = args[0];
-		String path = args[1];
-
-		int sourceParallelism = Integer.parseInt(args[2]);
-		int sinkParallelism = Integer.parseInt(args[3]);
-
-		Properties properties = new Properties();
-		properties.setProperty("bootstrap.servers", "kafka-headless.zhongchuang.svc.cluster.local:9092");
-		properties.setProperty("group.id", "test-kafka-1");
-		properties.setProperty("consumer.timeout.ms", "60000");
-
-
-		properties.setProperty("fs.default-scheme","hdfs://hadoop-spark-master.hive-test.svc.cluster.local:9000");
-		//DataStreamSource<ZZKQM> table = env.addSource(new KafkaSource());
-
-		//Gson gson = new Gson();
 		DataStream<String> stream = env
 				.addSource(new FlinkKafkaConsumer<>(topic, new SimpleStringSchema(), properties).setStartFromEarliest()).setParallelism(sourceParallelism);
 
-		DataStream<String> DGKH_stream = env.addSource(new FlinkKafkaConsumer<>("test-DGKH", new SimpleStringSchema(), properties).setStartFromEarliest());
+		DataStream<String> JGXX_stream = env.addSource(new FlinkKafkaConsumer<>("test-test-testT_GX_JGXX", new SimpleStringSchema(), properties).setStartFromEarliest());
 
-		DataStream<String> id_stream = DGKH_stream.map(new MapFunction<String, String>() {
+		DataStream<String> id_stream = JGXX_stream.map(new MapFunction<String, String>() {
 			@Override
 			public String map(String s) throws Exception {
-				hashSet.add(s);
-				return null;
+				Gson gson = new Gson();
+				JsonObject result = new JsonParser().parse(s).getAsJsonObject();
+				String id = result.get("NBJGH").getAsString();
+				hashSet.add(id);
+				return id;
 			}
 		});
+
+		id_stream.print();
 
 
 		DataStream<T_KJ_ZZQKM> itemStream = stream.map(new MapFunction<String, T_KJ_ZZQKM>() {
@@ -87,20 +104,21 @@ public class StreamingJob {
 			}
 		}).setParallelism(sinkParallelism);
 
-
+//		itemStream.print();
 
 		SplitStream<T_KJ_ZZQKM> split = itemStream.split(new OutputSelector<T_KJ_ZZQKM>() {
 			@Override
 			public Iterable<String> select(T_KJ_ZZQKM t_kj_zzqkm) {
 				List<String> output = new ArrayList<String>();
-				if (t_kj_zzqkm.isNotnull()){
-					output.add("notnull");
+				if (!t_kj_zzqkm.isNotnull()){
+					output.add("null");
 				}
-				else if(hashSet.contains(t_kj_zzqkm.getDFFSE())){
-					output.add("notnull");
+				else if(!hashSet.contains(t_kj_zzqkm.getNBJGH())){
+					System.out.println("error");
+					output.add("null");
 				}
 				else {
-					output.add("null");
+					output.add("notnull");
 
 				}
 				return output;
@@ -111,7 +129,7 @@ public class StreamingJob {
 		falseStream.print();
 
 		DataStream<T_KJ_ZZQKM> trueStream = split.select("notnull");
-
+//		trueStream.print();
 //		trueStream.flatMap(new FlatMapFunction<T_KJ_ZZQKM, Object>() {
 //			long received = 0;
 //			long logfreq = 1000000;
